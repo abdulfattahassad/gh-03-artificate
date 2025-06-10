@@ -1,0 +1,49 @@
+name: workflow-artifcate
+on: [ push, workflow_dispatch ]
+jobs:
+  buildtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  Deployment:
+    needs: buildtest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Build project
+        run: npm run build
+      - name: workflow-artifcate
+        uses: actions/artifact@v2
+        with:
+          name: build-artifact
+          path:  |
+            package-lock.json
+            package.json
+            dist
+  
+
+      - name: Deploy to production
+        run: echo "Deploying to production server..."
+      - name: Output GitHub context
+        run: echo "${{ toJSON(github) }}"
+      
