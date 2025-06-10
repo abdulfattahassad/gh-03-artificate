@@ -33,7 +33,7 @@ jobs:
       - name: Build project
         run: npm run build
       - name: workflow-artifcate
-        uses: actions/artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifact
           path:  |
